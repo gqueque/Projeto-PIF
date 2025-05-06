@@ -1,6 +1,9 @@
 #ifndef CLI_H
 #define CLI_H
 
-void exibirMensagem();
+void cli_setup();
+void cli_cleanup();
+void clrscr();
+void gotoxy(int x, int y);
 
 #endif
