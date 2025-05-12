@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <windows.h> // ou <unistd.h> + termios para Linux
+#include <windows.h> 
 #include "cli.h"
 
 void cli_setup() {
@@ -8,7 +8,7 @@ void cli_setup() {
 }
 
 void cli_cleanup() {
-    // nada aqui por enquanto
+   
 }
 
 void clrscr() {
