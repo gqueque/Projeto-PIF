@@ -6,6 +6,7 @@
 typedef struct {
     int x, y;
     int direcao;
+    int origem_x, origem_y;
 } Fantasma;
 
 void inicializar_fantasmas(int largura, int altura);

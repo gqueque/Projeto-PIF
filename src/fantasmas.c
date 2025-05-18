@@ -23,18 +23,38 @@ void inicializar_fantasmas(int largura, int altura) {
     }
 }
 //teste
+bool posicao_ocupada(int x, int y, int index_atual) {
+    for (int j = 0; j < NUM_FANTASMAS; j++) {
+        if (j != index_atual && fantasmas[j].x == x && fantasmas[j].y == y) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void mover_fantasmas_para_jogador(int jogador_x, int jogador_y, int largura, int altura) {
     contador_lentidao++;
     if (contador_lentidao < FANTASMA_DELAY) return;
     contador_lentidao = 0;
 
     for (int i = 0; i < NUM_FANTASMAS; i++) {
-        if (fantasmas[i].x < jogador_x) fantasmas[i].x++;
-        else if (fantasmas[i].x > jogador_x) fantasmas[i].x--;
+        int novo_x = fantasmas[i].x;
+        int novo_y = fantasmas[i].y;
 
-        if (fantasmas[i].y < jogador_y) fantasmas[i].y++;
-        else if (fantasmas[i].y > jogador_y) fantasmas[i].y--;
+        // Cálculo do movimento
+        if (fantasmas[i].x < jogador_x) novo_x++;
+        else if (fantasmas[i].x > jogador_x) novo_x--;
 
+        if (fantasmas[i].y < jogador_y) novo_y++;
+        else if (fantasmas[i].y > jogador_y) novo_y--;
+
+        // Verifica se nova posição está ocupada por outro fantasma
+        if (!posicao_ocupada(novo_x, novo_y, i)) {
+            fantasmas[i].x = novo_x;
+            fantasmas[i].y = novo_y;
+        }
+
+        // Correção de bordas
         if (fantasmas[i].x < 1) fantasmas[i].x = 1;
         if (fantasmas[i].x >= largura - 1) fantasmas[i].x = largura - 2;
         if (fantasmas[i].y < 1) fantasmas[i].y = 1;
@@ -55,16 +75,26 @@ void checar_colisao_fantasmas(int* jogador_x, int* jogador_y, int* vidas, bool* 
         if (fantasmas[i].x == *jogador_x && fantasmas[i].y == *jogador_y) {
             (*vidas)--;
             *multiplicador = 1;
+            
+            // Reseta posição do jogador
             *jogador_x = largura / 2;
             *jogador_y = altura / 2;
+            
+            // Reseta TODOS os fantasmas para suas posições iniciais
+            for (int j = 0; j < NUM_FANTASMAS; j++) {
+                fantasmas[j].x = origem_x[j];
+                fantasmas[j].y = origem_y[j];
+            }
+            
+            // Força a tela a renderizar novamente
             *precisa_render = true;
-
+            
+            // Exibe mensagem de perda de vida
             screenGotoxy(3, 24);
             screenSetColor(RED, BLACK);
             printf("💀 Você perdeu 1 vida! Vidas restantes: %d", *vidas);
-
-            fantasmas[i].x = origem_x[i];
-            fantasmas[i].y = origem_y[i];
+            
+            break; // Sai do loop após a colisão para evitar múltiplas checagens
         }
     }
 }
