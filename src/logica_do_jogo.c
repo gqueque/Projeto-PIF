@@ -14,6 +14,12 @@
 
 #define MAP_LINHAS (SCRENDY - SCRSTARTY - 1)
 #define MAP_COLUNAS (SCRENDX - SCRSTARTX - 1)
+#define MAX_ENTRADAS 100
+
+typedef struct {
+    char nome[50];
+    int pontos;
+} EntradaRanking;
 
 typedef struct {
     int x, y;
@@ -42,34 +48,37 @@ void salvar_ranking(const char* nome, int pontos) {
     }
 }
 
+int comparar(const void* a, const void* b) {
+    EntradaRanking* r1 = (EntradaRanking*)a;
+    EntradaRanking* r2 = (EntradaRanking*)b;
+    return r2->pontos - r1->pontos; // decrescente
+}
+
 void mostrar_ranking() {
+    EntradaRanking entradas[MAX_ENTRADAS];
+    int count = 0;
+
     FILE* f = fopen("ranking.txt", "r");
     if (!f) {
-        screenGotoxy(5, 22);
+        screenGotoxy(5, 4);
         printf("Sem ranking salvo ainda.");
         return;
     }
 
-    // Limpa a área do ranking antes de imprimir
-    for (int linha = 22; linha < MAXY - 1; linha++) {
-        screenGotoxy(5, linha);
-        printf("                                        ");
-    }
-
-    screenGotoxy(5, 22);
-    printf("=== RANKING ===");
-    char nome[50];
-    int pontos;
-    int linha = 23;
-
-    while (fscanf(f, "%s %d", nome, &pontos) == 2 && linha < MAXY - 1) {
-        screenGotoxy(5, linha++);
-        printf("%s - %d pontos", nome, pontos);
-    }
-
+    while (fscanf(f, "%s %d", entradas[count].nome, &entradas[count].pontos) == 2 && count < MAX_ENTRADAS)
+        count++;
     fclose(f);
-}
 
+    qsort(entradas, count, sizeof(EntradaRanking), comparar);
+
+    screenGotoxy(5, 4);
+    printf("=== RANKING ===");
+
+    for (int i = 0; i < count && i < 10; i++) {
+        screenGotoxy(5, 5 + i);
+        printf("%d° %s - %d pontos", i + 1, entradas[i].nome, entradas[i].pontos);
+    }
+}
 
 static char** criarMapa() {
     char** mapa = malloc(MAP_LINHAS * sizeof(char*));
@@ -89,11 +98,9 @@ static void destruirMapa(char** mapa) {
 }
 
 static bool ocupado(int x, int y) {
-    for (int i = 0; i < 4; i++) {
-        if (logic_items[i].ativo && logic_items[i].x == x && logic_items[i].y == y) {
+    for (int i = 0; i < 4; i++)
+        if (logic_items[i].ativo && logic_items[i].x == x && logic_items[i].y == y)
             return true;
-        }
-    }
     return false;
 }
 
@@ -121,21 +128,19 @@ static void draw_expression(LogicalExpression expr) {
 
 static void draw_logic_items() {
     screenSetColor(WHITE, BLACK);
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++)
         if (logic_items[i].ativo) {
             screenGotoxy(SCRSTARTX + 1 + logic_items[i].x, SCRSTARTY + 1 + logic_items[i].y);
             printf("%c", logic_items[i].expected_value ? 'V' : 'F');
         }
-    }
 }
 
 static void renderizarCena(char** mapa, Player* jogador, bool atualiza_msg) {
-    for (int i = 0; i < MAP_LINHAS; i++) {
+    for (int i = 0; i < MAP_LINHAS; i++)
         for (int j = 0; j < MAP_COLUNAS; j++) {
             screenGotoxy(SCRSTARTX + 1 + j, SCRSTARTY + 1 + i);
             printf(" ");
         }
-    }
 
     draw_logic_items();
     desenhar_fantasmas(SCRSTARTX, SCRSTARTY);
@@ -144,12 +149,12 @@ static void renderizarCena(char** mapa, Player* jogador, bool atualiza_msg) {
     screenGotoxy(SCRSTARTX + 1 + jogador->x, SCRSTARTY + 1 + jogador->y);
     printf("🥠");
 
-    screenGotoxy(SCRSTARTX + 2, SCRENDY);
     screenSetColor(CYAN, BLACK);
+    screenGotoxy(SCRSTARTX + 2, SCRENDY);
     printf("Pontuação: %d  x%d", jogador->pontos, multiplicador);
 
-    screenGotoxy(SCRSTARTX + 25, SCRENDY);
     screenSetColor(LIGHTRED, BLACK);
+    screenGotoxy(SCRSTARTX + 25, SCRENDY);
     printf("Vidas: %d", vidas);
 
     if (atualiza_msg) {
@@ -204,8 +209,9 @@ static void check_logic_collision(Player* jogador, LogicalExpression expr, bool*
                     nivel++;
                     if (nivel > 3) {
                         screenGotoxy(SCRSTARTX + 2, SCRENDY + 3);
-                        printf("Parabéns, Guga! Você zerou o jogo!");
-                        sleep(3);
+                        printf("Parabéns! Você zerou o jogo!");
+                        sleep(2);
+                        vidas = 0;
                         return;
                     } else {
                         expressao = get_random_expression(nivel);
@@ -280,12 +286,24 @@ void iniciar_jogo() {
     }
 
     salvar_ranking(nome, jogador.pontos);
+
+    screenClear();
+    screenSetColor(CYAN, BLACK);
+    screenGotoxy(5, 2);
+    printf("🎮 Fim de jogo, %s! Sua pontuação final: %d", nome, jogador.pontos);
+
     mostrar_ranking();
+
+    screenSetColor(YELLOW, BLACK);
+    screenGotoxy(5, MAXY - 2);
+    printf("Pressione ENTER para sair...");
+    screenShowCursor();
     screenUpdate();
-    sleep(5); 
+
+    while (getchar() != '\n');
+    getchar();
 
     destruirMapa(mapa);
-    screenShowCursor();
     keyboardDestroy();
     timerDestroy();
     screenDestroy();

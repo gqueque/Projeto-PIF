@@ -2,8 +2,8 @@
 CC = gcc
 CFLAGS = -Wall -Werror -g -I$(INCLUDE_DIR)
 
-#project name
-PROJ_NAME = cli-lib-example
+# Project name (nome do executável)
+PROJ_NAME = PROJETO-PIF
 
 # Target directories
 BUILD_DIR   = build
@@ -15,27 +15,28 @@ INCLUDE_DIR = include
 SRC_FILES = $(notdir $(wildcard $(SRC_DIR)/*.c))
 OBJ_FILES = $(SRC_FILES:%.c=$(OBJ_DIR)/%.o)
 
-# Build target
+# Default target
 all: $(OBJ_DIR) $(OBJ_FILES)
-	@echo Creating $(BUILD_DIR)/$(PROJ_NAME)
+	@echo Compilando o projeto $(PROJ_NAME)...
 	@$(CC) $(CFLAGS) -o $(BUILD_DIR)/$(PROJ_NAME) $(OBJ_FILES)
 
-# Build directory
+# Criar pasta build/ e build/obj/
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
 $(OBJ_DIR): $(BUILD_DIR)
 	mkdir -p $(OBJ_DIR)
 
-# Object files
+# Compilar arquivos .c para .o
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@echo Compiling $@...
+	@echo Compilando $<...
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-# Clean target
+# Limpar arquivos gerados
 clean:
 	rm -rf $(BUILD_DIR)
 
-# Run target
+# Rodar o jogo
 run: all
-	./$(BUILD_DIR)/cli-lib-example
+	@echo Executando o jogo...
+	@./$(BUILD_DIR)/$(PROJ_NAME)
