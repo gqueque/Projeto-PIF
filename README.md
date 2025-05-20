@@ -1,4 +1,7 @@
-# Pac-Lógica — Projeto de Programação Imperativa e Funcional
+<!-- Logo do jogo -->
+![image](https://github.com/user-attachments/assets/e318cf20-8539-4c32-a3d3-0b7a727a021d)
+
+# PaCroissant-Lógico — Projeto de Programação Imperativa e Funcional
 
 ## Informações Acadêmicas
 
@@ -15,8 +18,8 @@
 
 ## Sobre o Jogo
 
-**Pac-Lógica** é um jogo inspirado no clássico Pac-Man, com um objetivo educacional.  
-O jogador deve resolver expressões lógicas com base na tabela verdade, coletando os itens **V (verdadeiro)** e **F (falso)** na ordem correta.
+**PaCroissant-Lógico** é um jogo inspirado no clássico Pac-Man, com um objetivo educacional.  
+O jogador deve resolver expressões lógicas com base na tabela verdade, coletando os itens **V (verdadeiro)** e **F (falso)** na ordem correta, enquanto foge de fantasmas famintos por você, um Croissant.
 
 ### Objetivo
 
