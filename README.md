@@ -1,4 +1,7 @@
-# Pac-Lógica — Projeto de Programação Imperativa e Funcional
+<!-- Logo do jogo -->
+![image](https://github.com/user-attachments/assets/e318cf20-8539-4c32-a3d3-0b7a727a021d)
+
+# PaCroissant-Lógico — Projeto de Programação Imperativa e Funcional
 
 ## Informações Acadêmicas
 
@@ -15,8 +18,8 @@
 
 ## Sobre o Jogo
 
-**Pac-Lógica** é um jogo inspirado no clássico Pac-Man, com um objetivo educacional.  
-O jogador deve resolver expressões lógicas com base na tabela verdade, coletando os itens **V (verdadeiro)** e **F (falso)** na ordem correta.
+**PaCroissant-Lógico** é um jogo inspirado no clássico Pac-Man, com um objetivo educacional.  
+O jogador deve resolver expressões lógicas com base na tabela verdade, coletando os itens **V (verdadeiro)** e **F (falso)** na ordem correta, enquanto foge de fantasmas famintos por você, um Croissant.
 
 ### Objetivo
 
@@ -60,25 +63,34 @@ O jogador deve resolver expressões lógicas com base na tabela verdade, coletan
 
 ---
 
-## Item de Congelamento
+## Power-ups Especiais
 
-- Um item especial pode aparecer no mapa.
-- Quando coletado, congela todos os fantasmas por 5 segundos.
-- Isso permite que o jogador pense com mais calma ao resolver a expressão.
+### Item de Congelamento
+
+- Um item de gelo aparece  no mapa como 🥶. 
+- Quando coletado, congela todos os fantasmas por 5 segundos, permitindo que o jogador pense com calma.  
 - Após esse tempo, os fantasmas voltam a se mover normalmente.
+
+### Xícara de Café
+
+- Um item de café aparece no mapa como ☕.  
+- Quando coletado, concede **+1 vida** ao jogador.  
+- Use com sabedoria para sobreviver às perseguições dos fantasmas.
+- Aparece no mapa 1x por fase.
+
 
 ---
 
-## Níveis
+## Fases
 
-O jogo possui 3 níveis de dificuldade:
+O jogo possui 3 fases de dificuldade:
 
 1. Fácil  
 2. Médio  
 3. Difícil
 
 O jogador avança de fase ao completar a expressão atual corretamente.  
-Ao finalizar todos os níveis, o jogo se encerra.
+Ao finalizar todos as fases, o jogo se encerra.
 
 ---
 
@@ -87,20 +99,30 @@ Ao finalizar todos os níveis, o jogo se encerra.
 - Antes de iniciar, o jogador insere seu nome.
 - Ao perder todas as vidas ou vencer o jogo:
   - A pontuação é salva no arquivo `ranking.txt`.
-  - O ranking com os melhores resultados é exibido ao final da partida.
+  - O ranking com os melhores resultados é exibido ao final da partida em ordem crescente.
 
 ---
+
+## Gameplay (Screenshot)
+![image](https://github.com/user-attachments/assets/de345376-8ff2-4c93-83e6-aa7abef78e76)
+
 
 ## Como Rodar o Projeto
 
 ### Pré-requisitos
 
-- Linux ou macOS (ou WSL no Windows)
-- `gcc` instalado
-- Terminal compatível com ANSI (bash, zsh etc.)
+- Linux ou macOS (ou WSL no Windows)  
+- `gcc` instalado  
+- Terminal compatível com ANSI (bash, zsh etc.)  
 
 ### Passo a passo
 
-```bash
-git clone https://github.com/gqueque/Projeto-PIF.git
-cd Projeto-P
+1. **Abra o terminal**  
+   - No Windows, abra o WSL.  
+   - No Linux/macOS, abra o shell de sua preferência.  
+
+2. **Clone o repositório e rode o jogo**  
+   ```bash
+   git clone https://github.com/gqueque/Projeto-PIF.git
+   cd Projeto-PIF
+   make run

@@ -13,6 +13,8 @@
 #include "../include/expressoes_logicas.h"
 #include "../include/tela_de_etapa.h"
 #include "../include/congelamento.h"
+#include "cafezinho.h"
+
 
 #define MAP_LINHAS (SCRENDY - SCRSTARTY - 1)
 #define MAP_COLUNAS (SCRENDX - SCRSTARTX - 1)
@@ -51,6 +53,8 @@ static int nivel = 1;
 static int multiplicador = 1;
 static LogicalExpression expressao;
 static ItemCongelante itemCongelante;
+static CoffeeItem cafezinho;
+
 
 
 void exibir_mensagem_temporaria(const char* linha1, const char* linha2, int duracao_segundos) {
@@ -164,11 +168,12 @@ static void renderizarCena(char** mapa, Player* jogador, bool atualiza_msg) {
 
     draw_logic_items();
     desenhar_item_congelamento(&itemCongelante);
+    desenhar_item_cafe(&cafezinho);
     desenhar_fantasmas(SCRSTARTX, SCRSTARTY);
 
     screenSetColor(YELLOW, BLACK);
     screenGotoxy(SCRSTARTX + 1 + jogador->x, SCRSTARTY + 1 + jogador->y);
-    printf("🥠");
+    printf("🥐");
 
     screenSetColor(CYAN, BLACK);
     screenGotoxy(SCRSTARTX + 2, SCRENDY);
@@ -216,7 +221,13 @@ static void moverJogador(int tecla, Player* jogador) {
     }
 }
 
-static void check_logic_collision(Player* jogador, LogicalExpression expr, bool* precisa_render) {
+static void check_logic_collision(Player* jogador,LogicalExpression expr,bool* precisa_render) {
+    if (checar_colisao_cafe(&cafezinho, jogador->x, jogador->y)) {
+        vidas++;
+        exibir_mensagem_temporaria("☕ Vida extra!", "", 2);
+        *precisa_render = true;
+        return;  // sai cedo, sem processar tabela lógica
+    }
     for (int i = 0; i < 4; i++) {
         if (logic_items[i].ativo &&
             logic_items[i].x == jogador->x &&
@@ -247,7 +258,7 @@ static void check_logic_collision(Player* jogador, LogicalExpression expr, bool*
                         draw_expression(expressao);
                         place_logic_items(expressao);
                         gerar_item_congelamento(&itemCongelante);
-                        current_step = 0;
+                        gerar_item_cafe(&cafezinho,MAP_COLUNAS,MAP_LINHAS,jogador->x,jogador->y);
                     }
                 }
             } else {
@@ -287,6 +298,7 @@ void iniciar_jogo() {
     draw_expression(expressao);
     place_logic_items(expressao);
     gerar_item_congelamento(&itemCongelante);
+    gerar_item_cafe(&cafezinho, MAP_COLUNAS, MAP_LINHAS, jogador.x, jogador.y);
     inicializar_fantasmas(MAP_COLUNAS, MAP_LINHAS);
 
     int tecla = 0;
@@ -317,6 +329,8 @@ void iniciar_jogo() {
             precisa_render = true;
         }
     }
+        
+
 
     salvar_ranking(nome, jogador.pontos);
 
@@ -331,6 +345,7 @@ void iniciar_jogo() {
     screenGotoxy(5, MAXY - 2);
     printf("Pressione ENTER para sair...");
     screenShowCursor();
+    
     screenUpdate();
 
     
