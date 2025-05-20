@@ -1,5 +1,5 @@
 <!-- Logo do jogo -->
-![Você é capaz de resolver a tabela verdade?](assets/logo.png)
+![image](https://github.com/user-attachments/assets/c771257a-ea26-4466-976f-64b4b926992b)
 
 # PaCroissant-Lógico — Projeto de Programação Imperativa e Funcional
 
