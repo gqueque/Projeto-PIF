@@ -91,6 +91,10 @@ Ao finalizar todos os níveis, o jogo se encerra.
 
 ---
 
+## Gameplay
+![image](https://github.com/user-attachments/assets/de345376-8ff2-4c93-83e6-aa7abef78e76)
+
+
 ## Como Rodar o Projeto
 
 ### Pré-requisitos
@@ -103,4 +107,6 @@ Ao finalizar todos os níveis, o jogo se encerra.
 
 ```bash
 git clone https://github.com/gqueque/Projeto-PIF.git
-cd Projeto-P
+Abrir terminal WSL
+cd Projeto-PIF
+make run
