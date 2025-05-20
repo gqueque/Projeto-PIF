@@ -11,10 +11,19 @@
 #include "../include/timer.h"
 #include "../include/fantasmas.h"
 #include "../include/expressoes_logicas.h"
+#include "../include/tela_de_etapa.h"
+#include "../include/congelamento.h"
 
 #define MAP_LINHAS (SCRENDY - SCRSTARTY - 1)
 #define MAP_COLUNAS (SCRENDX - SCRSTARTX - 1)
 #define MAX_ENTRADAS 100
+
+typedef struct {
+    char texto1[100];
+    char texto2[100];
+    time_t expiracao;
+    bool ativa;
+} MensagemTemporaria;
 
 typedef struct {
     char nome[50];
@@ -32,6 +41,8 @@ typedef struct {
     bool ativo;
 } LogicItem;
 
+// Variáveis globais
+static MensagemTemporaria msgTemp;
 static Player jogador;
 static LogicItem logic_items[4];
 static int current_step = 0;
@@ -39,6 +50,15 @@ static int vidas = 3;
 static int nivel = 1;
 static int multiplicador = 1;
 static LogicalExpression expressao;
+static ItemCongelante itemCongelante;
+
+
+void exibir_mensagem_temporaria(const char* linha1, const char* linha2, int duracao_segundos) {
+    strncpy(msgTemp.texto1, linha1, sizeof(msgTemp.texto1));
+    strncpy(msgTemp.texto2, linha2, sizeof(msgTemp.texto2));
+    msgTemp.expiracao = time(NULL) + duracao_segundos;
+    msgTemp.ativa = true;
+}
 
 void salvar_ranking(const char* nome, int pontos) {
     FILE* f = fopen("ranking.txt", "a");
@@ -51,7 +71,7 @@ void salvar_ranking(const char* nome, int pontos) {
 int comparar(const void* a, const void* b) {
     EntradaRanking* r1 = (EntradaRanking*)a;
     EntradaRanking* r2 = (EntradaRanking*)b;
-    return r2->pontos - r1->pontos; // decrescente
+    return r2->pontos - r1->pontos; 
 }
 
 void mostrar_ranking() {
@@ -123,7 +143,7 @@ static void place_logic_items(LogicalExpression expr) {
 static void draw_expression(LogicalExpression expr) {
     screenSetColor(LIGHTCYAN, BLACK);
     screenGotoxy(SCRSTARTX + 2, SCRSTARTY);
-    printf("Resolvam: %s", expr.expr_str);
+    printf("Resolva: %s", expr.expr_str);
 }
 
 static void draw_logic_items() {
@@ -143,6 +163,7 @@ static void renderizarCena(char** mapa, Player* jogador, bool atualiza_msg) {
         }
 
     draw_logic_items();
+    desenhar_item_congelamento(&itemCongelante);
     desenhar_fantasmas(SCRSTARTX, SCRSTARTY);
 
     screenSetColor(YELLOW, BLACK);
@@ -157,11 +178,22 @@ static void renderizarCena(char** mapa, Player* jogador, bool atualiza_msg) {
     screenGotoxy(SCRSTARTX + 25, SCRENDY);
     printf("Vidas: %d", vidas);
 
-    if (atualiza_msg) {
-        screenGotoxy(SCRSTARTX + 2, SCRENDY + 1);
-        printf("                              ");
-        screenGotoxy(SCRSTARTX + 2, SCRENDY + 2);
-        printf("                              ");
+    if (msgTemp.ativa) {
+        time_t agora = time(NULL);
+        if (agora <= msgTemp.expiracao) {
+            screenGotoxy(SCRSTARTX + 2, SCRENDY + 1);
+            screenSetColor(GREEN, BLACK);
+            printf("%-30s", msgTemp.texto1);
+
+            screenGotoxy(SCRSTARTX + 2, SCRENDY + 2);
+            printf("%-30s", msgTemp.texto2);
+        } else {
+            msgTemp.ativa = false;
+            screenGotoxy(SCRSTARTX + 2, SCRENDY + 1);
+            printf("                              ");
+            screenGotoxy(SCRSTARTX + 2, SCRENDY + 2);
+            printf("                              ");
+        }
     }
 
     screenUpdate();
@@ -198,14 +230,10 @@ static void check_logic_collision(Player* jogador, LogicalExpression expr, bool*
                 jogador->pontos += 100 * multiplicador;
                 multiplicador++;
 
-                screenGotoxy(SCRSTARTX + 2, SCRENDY + 1);
-                screenSetColor(GREEN, BLACK);
-                printf("✔ Correto!");
+                exibir_mensagem_temporaria("✔ Correto!", "", 2);
 
                 if (current_step == 4) {
-                    screenGotoxy(SCRSTARTX + 2, SCRENDY + 2);
-                    printf("Expressão resolvida com sucesso!");
-
+                    exibir_mensagem_temporaria("Expressão resolvida!", "Avançando fase...", 2);
                     nivel++;
                     if (nivel > 3) {
                         screenGotoxy(SCRSTARTX + 2, SCRENDY + 3);
@@ -214,19 +242,19 @@ static void check_logic_collision(Player* jogador, LogicalExpression expr, bool*
                         vidas = 0;
                         return;
                     } else {
+                        mostrar_tela_fase(nivel);
                         expressao = get_random_expression(nivel);
                         draw_expression(expressao);
                         place_logic_items(expressao);
+                        gerar_item_congelamento(&itemCongelante);
                         current_step = 0;
                     }
                 }
             } else {
                 multiplicador = 1;
-                screenGotoxy(SCRSTARTX + 2, SCRENDY + 1);
-                screenSetColor(RED, BLACK);
-                printf("✘ Ordem errada! Reiniciando...");
-
+                exibir_mensagem_temporaria("✘ Ordem errada!", "Reiniciando...", 3);
                 place_logic_items(expr);
+                gerar_item_congelamento(&itemCongelante);
                 current_step = 0;
                 vidas--;
             }
@@ -258,6 +286,7 @@ void iniciar_jogo() {
     expressao = get_random_expression(nivel);
     draw_expression(expressao);
     place_logic_items(expressao);
+    gerar_item_congelamento(&itemCongelante);
     inicializar_fantasmas(MAP_COLUNAS, MAP_LINHAS);
 
     int tecla = 0;
@@ -273,13 +302,17 @@ void iniciar_jogo() {
         if (keyhit()) {
             tecla = readch();
             moverJogador(tecla, &jogador);
+            checar_congelamento(&itemCongelante, jogador.x, jogador.y);
             precisa_render = true;
             check_logic_collision(&jogador, expressao, &precisa_render);
         }
 
         if (timerTimeOver()) {
             tempo++;
-            mover_fantasmas_para_jogador(jogador.x, jogador.y, MAP_COLUNAS, MAP_LINHAS);
+            atualizar_estado_congelamento();
+            if (!fantasmasCongelados) {
+                mover_fantasmas_para_jogador(jogador.x, jogador.y, MAP_COLUNAS, MAP_LINHAS);
+            }
             checar_colisao_fantasmas(&jogador.x, &jogador.y, &vidas, &precisa_render, MAP_COLUNAS, MAP_LINHAS, &multiplicador);
             precisa_render = true;
         }
@@ -300,8 +333,17 @@ void iniciar_jogo() {
     screenShowCursor();
     screenUpdate();
 
-    while (getchar() != '\n');
-    getchar();
+    
+    int c;
+    do {
+        c = getchar();
+    } while (c != '\n' && c != EOF);
+
+    
+    do {
+        c = getchar();
+    } while (c != '\n' && c != EOF);
+
 
     destruirMapa(mapa);
     keyboardDestroy();

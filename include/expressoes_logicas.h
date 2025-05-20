@@ -1,4 +1,4 @@
-// expressoes_logicas.h
+
 #ifndef EXPRESOES_LOGICAS_H
 #define EXPRESOES_LOGICAS_H
 

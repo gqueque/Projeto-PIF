@@ -45,7 +45,23 @@ void screenDrawBorders()
     printf("%c", BOX_DWNRIGHT);
 
     screenBoxDisable();
-    
+}
+
+void screenDrawBox(int x1, int y1, int x2, int y2) {
+    screenGotoxy(x1, y1); printf("┌");
+    screenGotoxy(x2, y1); printf("┐");
+    screenGotoxy(x1, y2); printf("└");
+    screenGotoxy(x2, y2); printf("┘");
+
+    for (int x = x1 + 1; x < x2; x++) {
+        screenGotoxy(x, y1); printf("─");
+        screenGotoxy(x, y2); printf("─");
+    }
+
+    for (int y = y1 + 1; y < y2; y++) {
+        screenGotoxy(x1, y); printf("│");
+        screenGotoxy(x2, y); printf("│");
+    }
 }
 
 void screenInit(int drawBorders)
@@ -58,7 +74,7 @@ void screenInit(int drawBorders)
 
 void screenDestroy()
 {
-    printf("%s[0;39;49m", ESC); // Reset colors
+    printf("%s[0;39;49m", ESC); 
     screenSetNormal();
     screenClear();
     screenHomeCursor();

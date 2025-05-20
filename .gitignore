@@ -1,3 +1,22 @@
+# Pastas de build
+/build/
+/obj/
+
+# Arquivos de saída do jogo
+*.out
+*.exe
+
+# Ranking
+ranking.txt
+
+# Arquivos de editor
+*.swp
+*.swo
+.vscode/
+.idea/
+.DS_Store
+
+
 # Prerequisites
 *.d
 

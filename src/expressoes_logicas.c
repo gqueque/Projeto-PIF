@@ -1,29 +1,29 @@
-// expressoes_logicas.c
+
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include "../include/expressoes_logicas.h"
 
 static LogicalExpression faceis[] = {
-    {"A & B",      {0, 0, 0, 1}},
-    {"A | B",      {0, 1, 1, 1}},
-    {"!A",         {1, 1, 0, 0}},
+    {"A ∧ B",      {0, 0, 0, 1}},
+    {"A ∨ B",      {0, 1, 1, 1}},
 };
 
 static LogicalExpression medias[] = {
-    {"A & !B",     {1, 0, 0, 0}},
-    {"!A | B",     {1, 1, 0, 1}},
-    {"(A & B) | A",{0, 1, 1, 1}},
+    {"A ∧ ¬B",     {0, 0, 1, 0}},
+    {"¬A ∨ B",     {1, 1, 0, 1}},
+    {"(A ∧ B) ∨ A",{0, 0, 1, 1}},
 };
 
 static LogicalExpression dificieis[] = {
-    {"!(A | B)",        {1, 0, 0, 0}},
-    {"(A & B) | (!A)",  {1, 1, 0, 1}},
-    {"!(A & B) & B",    {0, 1, 1, 0}},
+    {"¬(A ∨ B)",         {1, 0, 0, 0}},
+    {"(A ∧ B) ∨ ¬A" ,     {1, 1, 0, 1}},
+    {"¬(A ∧ B) ∧ B",     {0, 1, 0, 0}},
 };
 
+
 LogicalExpression get_random_expression(int nivel) {
-    srand(time(NULL)); // garantir aleatoriedade diferente
+    srand(time(NULL)); 
 
     int index;
     if (nivel == 1) {

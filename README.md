@@ -1,98 +1,106 @@
-# 🕹️ Pac-Lógica — Projeto de Programação Imperativa e Funcional
+# Pac-Lógica — Projeto de Programação Imperativa e Funcional
 
-## 🎓 Informações Acadêmicas
+## Informações Acadêmicas
 
-- **Disciplina:** Programação Imperativa e Funcional - 2025.1  
+- **Disciplina:** Programação Imperativa e Funcional — 2025.1  
 - **Instituição:** CESAR School
 
-## 👥 Integrantes
+## Integrantes
 
-- Gustavo Queque ([@gqueque](https://github.com/gqueque))
-- Maria Júlia ([@mmajumagalhaes](https://github.com/mmajumagalhaes))
-- Luiz Felipe ([@LuizFelipexDD](https://github.com/LuizFelipexDD))
-
----
-
-## 🧠 Sobre o Jogo
-
-O **Pac-Lógica** é um jogo inspirado no clássico Pac-Man, mas com uma pegada educativa:  
-O jogador deve **resolver expressões lógicas** usando a **tabela verdade**, coletando os itens `V` (verdadeiro) e `F` (falso) **na ordem correta**.
-
-### 💡 Objetivo:
-- Coletar os valores da **tabela verdade** da expressão exibida na parte superior da tela.
-- Se pegar fora de ordem, perde 1 vida e reinicia a sequência daquela expressão.
-- Se um **fantasma** encostar no jogador, também perde 1 vida.
-- O jogador começa com **3 vidas**.
+- Gustavo Queque ([github.com/gqueque](https://github.com/gqueque))
+- Maria Júlia ([github.com/mmajumagalhaes](https://github.com/mmajumagalhaes))
+- Luiz Felipe ([github.com/LuizFelipexDD](https://github.com/LuizFelipexDD))
 
 ---
 
-## 🎮 Como Funciona
+## Sobre o Jogo
 
-### ▶️ Controles
+**Pac-Lógica** é um jogo inspirado no clássico Pac-Man, com um objetivo educacional.  
+O jogador deve resolver expressões lógicas com base na tabela verdade, coletando os itens **V (verdadeiro)** e **F (falso)** na ordem correta.
 
-| Tecla | Ação        |
-|-------|-------------|
-| `W`   | Cima        |
-| `A`   | Esquerda    |
-| `S`   | Baixo       |
-| `D`   | Direita     |
-| `Q`   | Sair do jogo|
+### Objetivo
 
----
-
-### 🧾 Regras
-
-- Cada expressão lógica possui **4 valores** (para as 4 combinações possíveis de A e B).
-- Esses valores são espalhados como itens (`V` ou `F`) no mapa.
-- O jogador deve coletar **na ordem correta da tabela verdade**.
-- Ao acertar, ganha **100 pontos x multiplicador**.
-- O **multiplicador** aumenta a cada acerto consecutivo, e **zera** se errar a ordem ou for pego por um fantasma.
+- Coletar os valores da tabela verdade da expressão exibida no topo da tela.
+- Coletar um item fora da ordem resulta na perda de 1 vida e reinício da sequência.
+- Colisões com fantasmas também causam perda de vida.
+- O jogador começa com 3 vidas.
 
 ---
 
-### 👻 Fantasmas
+## Controles
 
-- Existem fantasmas no mapa que perseguem o jogador.
-- Ao colidir com um fantasma, o jogador perde 1 vida e é reposicionado.
-- Fantasmas voltam para sua posição de origem após colisão.
+| Tecla | Ação         |
+|-------|--------------|
+| W     | Cima         |
+| A     | Esquerda     |
+| S     | Baixo        |
+| D     | Direita      |
+| Q     | Sair do jogo |
 
 ---
 
-## 🏁 Níveis
+## Regras
+
+- Cada expressão lógica possui 4 resultados (para as 4 combinações possíveis de A e B).
+- Os itens V e F são espalhados no mapa.
+- O jogador deve coletar os valores na ordem correta.
+- A cada acerto:
+  - Ganha 100 pontos × multiplicador atual.
+  - O multiplicador aumenta a cada acerto consecutivo.
+- O multiplicador zera ao errar a ordem ou ser pego por um fantasma.
+
+---
+
+## Fantasmas
+
+- Os fantasmas perseguem o jogador.
+- Ao colidir com um fantasma:
+  - O jogador perde 1 vida e é reposicionado.
+  - O fantasma retorna à sua posição inicial.
+
+---
+
+## Item de Congelamento
+
+- Um item especial pode aparecer no mapa.
+- Quando coletado, congela todos os fantasmas por 5 segundos.
+- Isso permite que o jogador pense com mais calma ao resolver a expressão.
+- Após esse tempo, os fantasmas voltam a se mover normalmente.
+
+---
+
+## Níveis
 
 O jogo possui 3 níveis de dificuldade:
-1. **Fácil**
-2. **Médio**
-3. **Difícil**
 
-A cada expressão resolvida, o jogador avança para o próximo nível.  
-Ao completar todos os níveis: **O jogo se encerra!**
+1. Fácil  
+2. Médio  
+3. Difícil
 
----
-
-## 🏆 Ranking
-- O jogador insere seu nome e starta o jogo.
-- Ao perder todas as vidas ou zerar o jogo.
-- A pontuação final é salva em um arquivo `ranking.txt`
-- O ranking é exibido ao final da partida.
+O jogador avança de fase ao completar a expressão atual corretamente.  
+Ao finalizar todos os níveis, o jogo se encerra.
 
 ---
 
-## ⚙️ Como Rodar o Projeto
+## Ranking
 
-### 🖥️ Pré-requisitos
+- Antes de iniciar, o jogador insere seu nome.
+- Ao perder todas as vidas ou vencer o jogo:
+  - A pontuação é salva no arquivo `ranking.txt`.
+  - O ranking com os melhores resultados é exibido ao final da partida.
 
-- Sistema **Linux ou macOS** (ou usar WSL no Windows)
+---
+
+## Como Rodar o Projeto
+
+### Pré-requisitos
+
+- Linux ou macOS (ou WSL no Windows)
 - `gcc` instalado
 - Terminal compatível com ANSI (bash, zsh etc.)
 
----
-
-### 🚀 Passo a passo
-
-1. Clone o projeto:
+### Passo a passo
 
 ```bash
 git clone https://github.com/gqueque/Projeto-PIF.git
-cd Projeto-PIF
-make run
+cd Projeto-P
